@@ -120,4 +120,4 @@
 
           return
         end subroutine bcc2desc
-      end subroutine import_hamiltonian
+      end subroutine input_hamiltonian
