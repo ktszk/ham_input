@@ -1,41 +1,87 @@
 #include <stdio.h>
+#include <string.h>
 #include <complex.h>
 #include <math.h>
 
-int input_hamiltonian(char *fname,int no, int nr,
-		      double complex *hop,
-		      double *rvec){
-  FILE *fp;
-  int i,j,k,ret;
-  double t1,t2,t3,t4,t5;
-
-  fp=fopen(fname,"r");
-  if(fp==NULL){
-    printf("No file!");
-    return -1;
-  }
-  else {
-    for(i=0; i<=no; i++){
-      for(j=0; j<=no; j++){
-	for(k=0; k<=nr; k++){
-	  printf("%d %d %d\n",i,j,k);
-	  ret=fscanf(fp,"%lf %lf %lf %lf %lf",t1,t2,t3,t4,t5);
-	  printf("%lf %lf %lf %lf %lf \n",t1,t2,t3,t4,t5);
-	}
-      }
-    }
-  }
-  fclose(fp);
-  printf("%s %d %d\n",fname,no,nr);
-  return 0;
-}
+int input_hamiltonian(char fname[],int no, int nr,
+		      double complex hop[][no][nr],
+		      double rvec[][3],int flag);
 
 int main(){
   const char name[256]="ham.dat";
-  const int no=1, nr=4;
-  int err;
+  const int no=1, nr=4, flag=1;
+  int err,i,j,k;
   double rvec[nr][3];
   double complex hop[no][no][nr];
-  err=input_hamiltonian(name,no,nr,hop,rvec);
+
+  err=input_hamiltonian(name,no,nr,hop,rvec,flag);
+  for(i=0; i<no; i++){
+    for(j=0; j<no; j++){
+      for(k=0; k<nr; k++){
+	printf("%lf %lf %lf %lf %lf \n",rvec[k][0],rvec[k][1],rvec[k][2],
+	       creal(hop[i][j][k]),cimag(hop[i][j][k]));
+      }
+    }
+  }
+
+  return 0;
+}
+
+int input_hamiltonian(char fname[],int no, int nr,
+		      double complex hop[][no][nr],
+		      double rvec[][3],int flag){
+  FILE *fp,*fp2;
+  int i,j,k,ret;
+  double t1,t2;
+  char rname[256],hname[256];
+
+  switch(flag){
+  case 1:
+    fp=fopen(fname,"r");
+    if(fp==NULL){
+      printf("No file!");
+      return -1;
+    }
+    for(i=0; i<no; i++){
+      for(j=0; j<no; j++){
+	for(k=0; k<nr; k++){
+	  ret=fscanf(fp,"%lf %lf %lf %lf %lf",
+		     &rvec[k][0],&rvec[k][1],&rvec[k][2],&t1,&t2);
+	  hop[i][j][k]=t1+I*t2;
+	}
+      }
+    }
+    fclose(fp);
+    break;
+  case 2:
+    strcpy(rname,fname);
+    strcpy(hname,fname);
+    strcat(rname,"/irvec.txt");
+    strcat(hname,"/ham_r.txt");
+    fp=fopen(rname,"r");
+    if(fp==NULL){
+      printf("No file!");
+      return -1;
+    }
+    fp2=fopen(hname,"r");
+    if(fp2==NULL){
+      printf("No file!");
+      return -1;
+    }
+    for(i=0; i<nr; i++){
+      ret=fscanf(fp,"%lf %lf %lf",&rvec[k][0],&rvec[k][1],&rvec[k][2]);
+      for(j=0; j<no;j++){
+        for(k=0;k<no;k++){
+	  ret=fscanf(fp2,"(%lf,%lf)",&t1,&t2);
+	  hop[i][j][k]=t1+I*t2;
+        }
+      }
+    }
+    fclose(fp);
+    fclose(fp2);
+    break;
+  case 3:
+    break;
+  }
   return 0;
 }

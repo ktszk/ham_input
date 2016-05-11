@@ -2,6 +2,7 @@
 #include <fstream>
 #include <complex>
 #include <string>
+#include <Boost>
 
 int input_hamiltonian(std::string &fname, int no, int nr, 
 		      std::complex<double> hop[no][no][nr], 
@@ -68,7 +69,7 @@ int input_hamiltonian(std::string &fname, int no, int nr,
 int main(){
   using std::cout;
   using std::endl;
-  static const int no=1,nr=4,flag=1;
+  static const int no=5,nr=729*2,flag=1;
 
   int err;
   double rvec[nr][3];
