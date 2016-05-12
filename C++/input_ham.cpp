@@ -2,14 +2,20 @@
 #include <fstream>
 #include <complex>
 #include <string>
+#include <vector>
 
-int input_hamiltonian(std::string &fname, int no, int nr, 
-		      std::complex<double> hop[no][no][nr], 
-		      double rvec[nr][3],int flag){
-  using std::cout;
-  using std::endl;
+using std::string;
+using std::vector;
+using std::complex;
+using std::cout;
+using std::endl;
+
+int input_hamiltonian(string &fname, vector<vector<double> > &rvec,
+		      vector<vector<vector<complex<double> > > > &hop, 
+		      const int &flag){
   std::ifstream rfile, hfile;
-  std::string fname_tmp,str;
+  string fname_tmp,str;
+  const int no=hop.size(), nr=rvec.size();
 
   switch(flag){
   case 1:
@@ -66,25 +72,25 @@ int input_hamiltonian(std::string &fname, int no, int nr,
 }
 
 int main(){
-  using std::cout;
-  using std::endl;
   static const int no=1,nr=4,flag=1;
 
   int err;
-  double rvec[nr][3];
-  std::string fname="ham.dat";
-  std::complex<double> hop[no][no][nr];
+  string fname="ham.dat";
+  vector<vector<double> > rvec(nr,vector<double>(3));
+  vector<vector<vector<complex<double> > > >
+      hop(no,vector<vector<complex<double> > >(no,vector<complex<double> >(nr)));
 
-  err=input_hamiltonian(fname,no,nr,hop,rvec,flag);
+  err=input_hamiltonian(fname,rvec,hop,flag);
   for(int i=0; i<nr; i++){
     for(int j=0;j<3; j++){
       cout<<rvec[i][j]<<" ";
     }
     for(int j=0; j<no;j++){
       for(int k=0;k<no;k++){
-	cout<<hop[k][j][i]<<endl;
+	cout<<hop[k][j][i];
       }
     }
+    cout<<endl;
   }
   return 0;
 }
