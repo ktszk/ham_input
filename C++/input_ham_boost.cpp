@@ -2,18 +2,19 @@
 #include <fstream>
 #include <complex>
 #include <string>
-#include <vector>
+#include <boost/multi_array.hpp>
 
 using std::string;
-using std::vector;
 using std::complex;
 using std::cout;
 using std::endl;
 
-typedef vector<vector<double> > rarray;
-typedef vector<vector<vector<complex<double> > > > harray;
+typedef boost::multi_array<double,2> rarray;
+typedef boost::multi_array<complex<double>,3> harray;
+//using rarray = boost::multi_array<double,2>; // for C++11 or later
+//using harray = boost::multi_array<complex<double>,3>; //for C++11 or later
 
-int input_hamiltonian(string &fname, rarray &rvec,harray &hop,const int &flag){
+int input_hamiltonian(string &fname, rarray &rvec, harray &hop, const int &flag){
   const int no=hop.size(), nr=rvec.size();
   string fname_tmp,str;
   switch(flag){
@@ -39,7 +40,7 @@ int input_hamiltonian(string &fname, rarray &rvec,harray &hop,const int &flag){
       for(int j=0; j<no;j++){
 	for(int k=0;k<nr;k++){
 	  getline(rfile,str);
-	  std::sscanf(str.c_str(),"%lf %lf %lf %lf %lf",
+	  sscanf(str.c_str(),"%lf %lf %lf %lf %lf",
 		      &rvec[k][0], &rvec[k][1], &rvec[k][2],
 		      &hop[j][i][k].real(), &hop[j][i][k].imag());
 	}
@@ -55,11 +56,11 @@ int input_hamiltonian(string &fname, rarray &rvec,harray &hop,const int &flag){
     }
     for(int i=0; i<nr; i++){
       getline(rfile,str);
-      std::sscanf(str.c_str(),"%lf %lf %lf",&rvec[i][0], &rvec[i][1], &rvec[i][2]);
+      sscanf(str.c_str(),"%lf %lf %lf",&rvec[i][0], &rvec[i][1], &rvec[i][2]);
       for(int j=0; j<no;j++){
 	for(int k=0;k<no;k++){
-	  getline(hfile,str);
-	  std::sscanf(str.c_str(),"(%lf, %lf)",&hop[k][j][i].real(), &hop[k][j][i].imag());
+          getline(hfile,str);
+          sscanf(str.c_str(),"(%lf, %lf)",&hop[k][j][i].real(), &hop[k][j][i].imag());
 	}
       }
     }
@@ -76,8 +77,8 @@ int main(){
 
   int err;
   string fname="ham.dat";
-  rarray rvec(nr,vector<double>(3));
-  harray hop(no,vector<vector<complex<double> > >(no,vector<complex<double> >(nr)));
+  rarray rvec(boost::extents[nr][3]);
+  harray hop(boost::extents[no][no][nr]);
 
   err=input_hamiltonian(fname,rvec,hop,flag);
   for(int i=0; i<nr; i++){
