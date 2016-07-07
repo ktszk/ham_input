@@ -1,29 +1,30 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 from __future__ import print_function, division
-import numpy as np
 def import_hop(fname,sw_ndegen):
+    import math
     tmp=[f.split() for f in open(fname+'/irvec.txt','r')]
-    rvec=np.array([[float(tt) for tt in tp] for tp in tmp])
+    rvec=[[float(tt) for tt in tp] for tp in tmp]
     tmp=[f.strip(' ()\n').split(',') for f in open(fname+'/ham_r.txt','r')]
     nr=len(rvec)
-    no=int(np.sqrt(len(tmp)/nr))
-    tmp1=np.array([complex(float(tp[0]),float(tp[1])) for tp in tmp])
-    ham_r=np.reshape(tmp1,(nr,no,no))
-    ndegen=(np.array([float(f) for f in open(fname+'/ndegen.txt','r')]) if sw_ndegen else np.array([1]*nr))
+    no=int(math.sqrt(len(tmp)/nr))
+    tmp1=[complex(float(tp[0]),float(tp[1])) for tp in tmp]
+    ham_r=[[[tmp1[k+j*no+i*no*no] for k in range(no)] for j in range(no)] for i in range(nr)]
+    ndegen=([float(f) for f in open(fname+'/ndegen.txt','r')] if sw_ndegen else [1]*nr)
     return(rvec,ndegen,ham_r,no,nr)
 
 def import_out(fname):
+    import math
     tmp=[f.split() for f in open(fname,'r')]
     tmp1=[[float(tp) for tp in tpp] for tpp in tmp]
-    tmp=np.array([complex(tp[3],tp[4]) for tp in tmp1])
+    tmp=[complex(tp[3],tp[4]) for tp in tmp1]
     r0=tmp1[0][:3]
     con=sum(1 if rr[:3]==r0 else 0  for rr in tmp1)
-    no=int(np.sqrt(con))
+    no=int(math.sqrt(con))
     nr=len(tmp1)//con
-    rvec=np.array([tp[:3] for tp in tmp1[:nr]])
-    ham_r=np.reshape(tmp,(no*no,nr)).T.reshape(nr,no,no)
-    ndegen=np.array([1]*nr)
+    rvec=[tp[:3] for tp in tmp1[:nr]]
+    ham_r=[[[tmp[i+j*nr+k*nr*no] for k in range(no)] for j in range(no)] for i in range(nr)]
+    ndegen=[1]*nr
     return(rvec,ndegen,ham_r,no,nr)
 
 def import_hr(name):
