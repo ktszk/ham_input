@@ -2,18 +2,24 @@
 #-*- coding:utf-8 -*-
 from __future__ import print_function, division
 import numpy as np
-def import_hop(fname,sw_ndegen):
+"""
+fname: input file name
+sw_hoplist: switch hopping order if True [nr,no,no] else [no,no,nr]
+no is number of orbitals. nr is number of hopping matrices. 
+sw_ndegen: import_hop only, select lead ndegen from ndegen.txt (True) or not (False)
+"""
+def import_hop(fname,sw_ndegen,sw_hoplist):
     tmp=[f.split() for f in open(fname+'/irvec.txt','r')]
     rvec=np.array([[float(tt) for tt in tp] for tp in tmp])
     tmp=[f.strip(' ()\n').split(',') for f in open(fname+'/ham_r.txt','r')]
     nr=len(rvec)
     no=int(np.sqrt(len(tmp)/nr))
     tmp1=np.array([complex(float(tp[0]),float(tp[1])) for tp in tmp])
-    ham_r=np.reshape(tmp1,(nr,no,no))
+    ham_r=(np.reshape(tmp1,(nr,no,no)) if sw_hoplist else np.reshape(tmp1,(nr,no*no)).T.reshape(no,no,nr))
     ndegen=(np.array([float(f) for f in open(fname+'/ndegen.txt','r')]) if sw_ndegen else np.array([1]*nr))
     return(rvec,ndegen,ham_r,no,nr)
 
-def import_out(fname):
+def import_out(fname,sw_hoplist):
     tmp=[f.split() for f in open(fname,'r')]
     tmp1=[[float(tp) for tp in tpp] for tpp in tmp]
     tmp=np.array([complex(tp[3],tp[4]) for tp in tmp1])
@@ -22,11 +28,11 @@ def import_out(fname):
     no=int(np.sqrt(con))
     nr=len(tmp1)//con
     rvec=np.array([tp[:3] for tp in tmp1[:nr]])
-    ham_r=np.reshape(tmp,(no*no,nr)).T.reshape(nr,no,no)
+    ham_r=(np.reshape(tmp,(no*no,nr)).T.reshape(nr,no,no) if sw_hoplist else np.reshape(tmp,(no,no,nr)))
     ndegen=np.array([1]*nr)
     return(rvec,ndegen,ham_r,no,nr)
 
-def import_hr(name):
+def import_hr(name,sw_hoplist):
     tmp=[f.split() for f in open('%s_hr.dat'%name)]
     no=int(tmp[1][0])
     nr=int(tmp[2][0])
@@ -38,8 +44,9 @@ def import_hr(name):
     ndegen=[]
     for tp in tmp1:
         ndegen=ndegen+tp
+    ndegen=np.array(ndegen)
     tmp1=[[float(t) for t in tp] for tp in tmp[c2:]]
-    tmp=[complex(tp[5],tp[6]) for tp in tmp1]
-    rvec=[tmp1[no*no*i][:3] for i in range(nr)]
-    ham_r=[[[tmp[k+j*no+i*no*no] for k in range(no)] for j in range(no)] for i in range(nr)]
+    tmp=np.array([complex(tp[5],tp[6]) for tp in tmp1])
+    rvec=np.array([tmp1[no*no*i][:3] for i in range(nr)])
+    ham_r=(np.reshape(tmp,(nr,no,no)) if sw_hoplist else np.reshape(tmp,(nr,no*no)).T.reshape(no,no,nr))
     return(rvec,ndegen,ham_r,no,nr)

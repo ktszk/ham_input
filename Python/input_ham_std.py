@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
+#if you can use only standard library, please use this script
 from __future__ import print_function, division
 def import_hop(fname,sw_ndegen):
     import math
