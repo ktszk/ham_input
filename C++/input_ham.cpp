@@ -10,22 +10,25 @@ using std::complex;
 using std::cout;
 using std::endl;
 
-typedef vector<vector<double> > rarray;
-typedef vector<vector<vector<complex<double> > > > harray;
+typedef vector<vector<double> > r_array;
+typedef vector<vector<vector<complex<double> > > > ham_array;
 
-int input_hamiltonian(string &fname, rarray &rvec,harray &hop,const int &flag){
+int input_hamiltonian(string &fname, r_array &rvec,ham_array &hop,const int &flag){
   const int no=hop.size(), nr=rvec.size();
   string fname_tmp,str;
   switch(flag){
-  case 1:
+  case 1:{
     fname_tmp=fname;
     break;
-  case 2:
+  }
+  case 2:{
     fname_tmp=fname+"/irvec.txt";
     break;
-  case 3:
+  }
+  case 3:{
     fname_tmp=fname+"_hr.dat";
     break;
+  }
   }
   std::ifstream rfile(fname_tmp.c_str(),std::ios::in);
   if(rfile.fail()){
@@ -65,8 +68,9 @@ int input_hamiltonian(string &fname, rarray &rvec,harray &hop,const int &flag){
     }
     break;
   }
-  case 3:
+  case 3:{
     break;
+  }
   }
   return 0;
 }
@@ -76,8 +80,8 @@ int main(){
 
   int err;
   string fname="ham.dat";
-  rarray rvec(nr,vector<double>(3));
-  harray hop(no,vector<vector<complex<double> > >(no,vector<complex<double> >(nr)));
+  r_array rvec(nr,vector<double>(3));
+  ham_array hop(no,vector<vector<complex<double> > >(no,vector<complex<double> >(nr)));
 
   err=input_hamiltonian(fname,rvec,hop,flag);
   for(int i=0; i<nr; i++){

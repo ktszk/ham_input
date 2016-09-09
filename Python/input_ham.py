@@ -4,11 +4,11 @@ from __future__ import print_function, division
 import numpy as np
 """
 fname: input file name
-sw_hoplist: switch hopping order if True [nr,no,no] else [no,no,nr]
+sw_hoplist: switch hopping order if True [nr,no,no] else [no,no,nr] default True
 no is number of orbitals. nr is number of hopping matrices. 
-sw_ndegen: import_hop only, select lead ndegen from ndegen.txt (True) or not (False)
+sw_ndegen: import_hop only, select lead ndegen from ndegen.txt (True) or not (False) default False
 """
-def import_hop(fname,sw_ndegen,sw_hoplist):
+def import_hop(fname,sw_ndegen=False,sw_hoplist=True):
     tmp=[f.split() for f in open(fname+'/irvec.txt','r')]
     rvec=np.array([[float(tt) for tt in tp] for tp in tmp])
     tmp=[f.strip(' ()\n').split(',') for f in open(fname+'/ham_r.txt','r')]
@@ -19,7 +19,7 @@ def import_hop(fname,sw_ndegen,sw_hoplist):
     ndegen=(np.array([float(f) for f in open(fname+'/ndegen.txt','r')]) if sw_ndegen else np.array([1]*nr))
     return(rvec,ndegen,ham_r,no,nr)
 
-def import_out(fname,sw_hoplist):
+def import_out(fname,sw_hoplist=True):
     tmp=[f.split() for f in open(fname,'r')]
     tmp1=[[float(tp) for tp in tpp] for tpp in tmp]
     tmp=np.array([complex(tp[3],tp[4]) for tp in tmp1])
@@ -32,7 +32,7 @@ def import_out(fname,sw_hoplist):
     ndegen=np.array([1]*nr)
     return(rvec,ndegen,ham_r,no,nr)
 
-def import_hr(name,sw_hoplist):
+def import_hr(name,sw_hoplist=True):
     tmp=[f.split() for f in open('%s_hr.dat'%name)]
     no=int(tmp[1][0])
     nr=int(tmp[2][0])

@@ -13,7 +13,7 @@ int input_hamiltonian(char fname[],int no, int nr,
   char *err,line[256];
 
   switch(flag){
-  case 1:
+  case 1:{
     fp=fopen(fname,"r");
     if(fp==NULL){
       printf("No file!");
@@ -31,7 +31,8 @@ int input_hamiltonian(char fname[],int no, int nr,
     }
     fclose(fp);
     break;
-  case 2:
+  }
+  case 2:{
     strcpy(rname,fname);
     strcpy(hname,fname);
     strcat(rname,"/irvec.txt");
@@ -60,8 +61,10 @@ int input_hamiltonian(char fname[],int no, int nr,
     fclose(fp);
     fclose(fp2);
     break;
-  case 3:
+  }
+  case 3:{
     break;
+  }
   }
   return 0;
 }

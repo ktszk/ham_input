@@ -18,15 +18,18 @@ int input_hamiltonian(string &fname, rarray &rvec, harray &hop, const int &flag)
   const int no=hop.size(), nr=rvec.size();
   string fname_tmp,str;
   switch(flag){
-  case 1:
+  case 1:{
     fname_tmp=fname;
     break;
-  case 2:
+  }
+  case 2:{
     fname_tmp=fname+"/irvec.txt";
     break;
-  case 3:
+  }
+  case 3:{
     fname_tmp=fname+"_hr.dat";
     break;
+  }
   }
   std::ifstream rfile(fname_tmp.c_str(),std::ios::in);
   if(rfile.fail()){
@@ -66,8 +69,9 @@ int input_hamiltonian(string &fname, rarray &rvec, harray &hop, const int &flag)
     }
     break;
   }
-  case 3:
+  case 3:{
     break;
+  }
   }
   return 0;
 }
