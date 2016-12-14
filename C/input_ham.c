@@ -7,8 +7,8 @@ int input_hamiltonian(char fname[],int no, int nr,
 		      double complex hop[][no][nr],
 		      double rvec[][3],int flag){
   FILE *fp,*fp2;
-  int i,j,k;
-  double t1,t2;
+  int i,j,k,l,m;
+  double t1, t2, tmp[3];
   char rname[128],hname[128];
   char *err,line[256];
 
@@ -63,6 +63,25 @@ int input_hamiltonian(char fname[],int no, int nr,
     break;
   }
   case 3:{
+    break;
+  }
+  case 4:{
+    fp=fopen("Hopping.dat","r");
+    if(fp==NULL){
+      printf("No file!");
+      return -1;
+    }
+    for(i=0; i<nr; i++){
+      for(j=0; j<no;j++){
+        for(k=0;k<no;k++){
+	  err=fgets(line,256,fp);
+	  sscanf(line,"%lf %lf %lf",&rvec[i][0],&rvec[i][1],&rvec[i][2],
+		 &tmp[0],&tmp[1],&tmp[2],&l,&m,&t1,&t2);
+	  hop[k][j][i]=t1+I*t2;
+        }
+      }
+    }
+    fclose(fp);
     break;
   }
   }

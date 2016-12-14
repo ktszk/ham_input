@@ -42,3 +42,21 @@ function import_out(fname)
     ndegen=[1 for i in 1:nr]
     return(rvec,ndegen,ham_r,no,nr)
 end
+
+function import_hr(fname):
+    tmp=open(fname*"_hr.dat","r") do fp
+        readlines(fp)
+    end
+end
+
+function import_Hopping():
+    tmp=open("Hopping.dat","r") do fp
+        readlines(fp)
+    end
+    axis=[float64(split(l)) for l in tmp[2:5]]
+    no,nr,nor=int(split(tmp[5]))
+    tmp1=[float64(split(l)) for l in tmp[7+no:]]
+    rvec=[tmp[no*no*i][:3] for i in 1:nr]
+    ham_r=reshape([complex64(tp[9],tp[10]) for tp in tmp1],nr,no,no)
+    return(rvec,ndegen,ham_r,no,nr,axis)
+end
