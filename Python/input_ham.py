@@ -25,18 +25,16 @@ def import_out(fname,sw_hoplist=True):
     tmp=np.array([complex(tp[3],tp[4]) for tp in tmp1])
     r0=tmp1[0][:3]
     con=sum(1 if rr[:3]==r0 else 0  for rr in tmp1)
-    no=int(np.sqrt(con))
-    nr=len(tmp1)//con
+    no,nr =int(np.sqrt(con)),len(tmp1)//con
     rvec=np.array([tp[:3] for tp in tmp1[:nr]])
     ham_r=(np.reshape(tmp,(no*no,nr)).T.reshape(nr,no,no) if sw_hoplist else np.reshape(tmp,(no,no,nr)))
     ndegen=np.array([1]*nr)
     return(rvec,ndegen,ham_r,no,nr)
 
 def import_hr(name,sw_hoplist=True):
-    tmp=[f.split() for f in open('%s_hr.dat'%name)]
-    no=int(tmp[1][0])
-    nr=int(tmp[2][0])
-    c1=0; c2=3
+    tmp=[f.split() for f in open('%s_hr.dat'%name,'r')]
+    no, nr=int(tmp[1][0]), int(tmp[2][0])
+    c1, c2=0,3
     while not c1==nr:
         c1=c1+len(tmp[c2])
         c2=c2+1
@@ -48,5 +46,18 @@ def import_hr(name,sw_hoplist=True):
     tmp1=[[float(t) for t in tp] for tp in tmp[c2:]]
     tmp=np.array([complex(tp[5],tp[6]) for tp in tmp1])
     rvec=np.array([tmp1[no*no*i][:3] for i in range(nr)])
-    ham_r=(np.reshape(tmp,(nr,no,no)) if sw_hoplist else np.reshape(tmp,(nr,no*no)).T.reshape(no,no,nr))
+    ham_r=(np.reshape(tmp,(nr,no,no)) if sw_hoplist
+           else np.reshape(tmp,(nr,no*no)).T.reshape(no,no,nr))
     return(rvec,ndegen,ham_r,no,nr)
+
+def import_Hopping(sw_hoplist):
+    tmp=[f.split() for f in open('Hopping.dat','r')]
+    axis=np.array([[float(tp) for tp in tpp] for tpp in tmp[1:4]])
+    no,nr=int(tmp[4][0]),int(tmp[4][1])
+    ndegen=np.array([1]*nr)
+    tmp1=[[float(t) for t in tp] for tp in tmp[6+no:]]
+    rvec=np.array([tmp1[no*no*i][:3] for i in range(nr)])
+    tmp=np.array([complex(tp[8],tp[9]) for tp in tmp1])
+    ham_r=(np.reshape(tmp,(nr,no,no)) if sw_hoplist
+           else np.reshape(tmp,(nr,no*no)).T.reshape(no,no,nr))
+    return(rvec,ndegen,ham_r,no,nr,axis)

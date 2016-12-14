@@ -45,3 +45,14 @@ def import_hr(name):
     rvec=[tmp1[no*no*i][:3] for i in range(nr)]
     ham_r=[[[tmp[k+j*no+i*no*no] for k in range(no)] for j in range(no)] for i in range(nr)]
     return(rvec,ndegen,ham_r,no,nr)
+
+def import_Hopping():
+    tmp=[f.split() for f in open('Hopping.dat','r')]
+    axis=[[float(tp) for tp in tpp] for tpp in tmp[1:4]]
+    no,nr=int(tmp[4][0]),int(tmp[4][1])
+    ndegen=[1]*nr
+    tmp1=[[float(t) for t in tp] for tp in tmp[6+no:]]
+    rvec=[tmp1[no*no*i][:3] for i in range(nr)]
+    tmp=[complex(tp[8],tp[9]) for tp in tmp1]
+    ham_r=[[[tmp[k+j*no+i*no*no] for k in range(no)] for j in range(no)] for i in range(nr)]
+    return(rvec,ndegen,ham_r,no,nr,axis)

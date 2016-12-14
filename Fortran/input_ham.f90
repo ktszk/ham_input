@@ -10,6 +10,7 @@
 
         integer(4) i,j,k,l,m
         real(8),allocatable::ndegen(:)
+        real(8):: tmp(3)
         character(10) dum
 
         hop=0.0d0
@@ -63,6 +64,34 @@
               end do
            end do
            deallocate(ndegen)
+           close(100)
+        case(4)
+           Open(100,file='Hopping.dat',status='old')
+           read(100,*)
+           do i=1,3
+              read(100,*)
+           end do
+           read(100,*) l,m,i
+           if(.not. no==l)then
+              print *,'orbital number conflict between input and hamiltonian'
+              stop
+           end if
+           if(.not. nr==m)then
+              print *,'number of hoppings conflict between input and hamiltonian'
+              stop
+           end if
+           read(100,*)
+           read(100,*)
+           do i=1,no
+              read(100,*)
+           end do
+           do  k=1,nr
+              do i=1,no
+                 do j=1,no
+                    read(100,*)rvec(k,:),tmp(:),l,m,hop(k,i,j)
+                 end do
+              end do
+           end do
            close(100)
         case default
            write(*,*) "wrong input flag"
