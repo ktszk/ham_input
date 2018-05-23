@@ -54,11 +54,11 @@
               stop
            end if
            allocate(ndegen(nr))
-           read(100,'(15I5)')(ndegen(i),i=1,nr)
+           read(100,*)(ndegen(i),i=1,nr)
            do  i=1,nr
               do j=1,no
                  do k=1,no
-                    read(100,'(5I5,2F12.6)') rvec(:,i),l,m,hop(i,k,j)
+                    read(100,*) rvec(:,i),l,m,hop(i,k,j)
                     hop(i,k,j)=hop(i,k,j)/ndegen(i)
                  end do
               end do
