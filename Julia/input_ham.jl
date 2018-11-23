@@ -47,6 +47,7 @@ function import_hr(fname):
     tmp=open(fname*"_hr.dat","r") do fp
         readlines(fp)
     end
+    no,nr=int(tmp[2]),int(tmp[3])
 end
 
 function import_Hopping():
