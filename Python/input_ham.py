@@ -46,7 +46,7 @@ def import_hr(name,sw_hoplist=True):
            else np.reshape(tmp,(nr,no*no)).T.reshape(no,no,nr))
     return(rvec,ndegen,ham_r,no,nr)
 
-def import_Hopping(sw_hoplist):
+def import_Hopping(sw_hoplist=True,sw_axis=False):
     tmp=[f.split() for f in open('Hopping.dat','r')]
     axis=np.array([[float(tp) for tp in tpp] for tpp in tmp[1:4]])
     no,nr=int(tmp[4][0]),int(tmp[4][1])
@@ -56,4 +56,7 @@ def import_Hopping(sw_hoplist):
     tmp=np.array([complex(tp[8],tp[9]) for tp in tmp1])
     ham_r=(np.reshape(tmp,(nr,no,no)) if sw_hoplist
            else np.reshape(tmp,(nr,no*no)).T.reshape(no,no,nr))
-    return(rvec,ndegen,ham_r,no,nr,axis)
+    if sw_axis:
+        return(rvec,ndegen,ham_r,no,nr,axis)
+    else:
+        return(rvec,ndegen,ham_r,no,nr)
