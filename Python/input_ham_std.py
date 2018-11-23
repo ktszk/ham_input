@@ -2,6 +2,12 @@
 #-*- coding:utf-8 -*-
 #if you can use only standard library, please use this script
 from __future__ import print_function, division
+"""
+fname: input file name
+sw_hoplist: switch hopping order if True [nr,no,no] else [no,no,nr] default True
+no is number of orbitals. nr is number of hopping matrices. 
+sw_ndegen: import_hop only, select lead ndegen from ndegen.txt (True) or not (False) default False
+"""
 def import_hop(fname,sw_ndegen=False):
     import math
     tmp=[f.split() for f in open(fname+'/irvec.txt','r')]
@@ -21,8 +27,7 @@ def import_out(fname):
     tmp=[complex(tp[3],tp[4]) for tp in tmp1]
     r0=tmp1[0][:3]
     con=sum(1 if rr[:3]==r0 else 0  for rr in tmp1)
-    no=int(math.sqrt(con))
-    nr=len(tmp1)//con
+    no,nr=int(math.sqrt(con)),len(tmp1)//con
     rvec=[tp[:3] for tp in tmp1[:nr]]
     ham_r=[[[tmp[i+j*nr+k*nr*no] for k in range(no)] for j in range(no)] for i in range(nr)]
     ndegen=[1]*nr
@@ -30,16 +35,12 @@ def import_out(fname):
 
 def import_hr(name):
     tmp=[f.split() for f in open('%s_hr.dat'%name)]
-    no=int(tmp[1][0])
-    nr=int(tmp[2][0])
-    c1=0; c2=3
-    while not c1==nr:
-        c1=c1+len(tmp[c2])
+    no,nr=int(tmp[1][0]),int(tmp[2][0])
+    c2,tmp1=3,[]
+    while not len(tmp1)==nr:
+        tmp1.extend(tmp[c2])
         c2=c2+1
-    tmp1=[[int(t) for t in tp] for tp in tmp[3:c2]]
-    ndegen=[]
-    for tp in tmp1:
-        ndegen=ndegen+tp
+    ndegen=[[int(t) for t in tp] for tp in tmp1]
     tmp1=[[float(t) for t in tp] for tp in tmp[c2:]]
     tmp=[complex(tp[5],tp[6]) for tp in tmp1]
     rvec=[tmp1[no*no*i][:3] for i in range(nr)]

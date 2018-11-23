@@ -10,7 +10,7 @@
 
         integer(4) i,j,k,l,m
         real(8),allocatable::ndegen(:)
-        real(8):: tmp(3)
+        real(8):: tmp(3),h_real,h_imag
         character(10) dum
 
         hop=0.0d0
@@ -54,12 +54,12 @@
               stop
            end if
            allocate(ndegen(nr))
-           read(100,*)(ndegen(i),i=1,nr)
+           read(100,'(15F5.0)')(ndegen(i),i=1,nr)
            do  i=1,nr
               do j=1,no
                  do k=1,no
-                    read(100,*) rvec(:,i),l,m,hop(i,k,j)
-                    hop(i,k,j)=hop(i,k,j)/ndegen(i)
+                    read(100,'(3F5.0,2I5,2F12.6)') rvec(:,i),l,m,h_real,h_imag
+                    hop(i,k,j)=cmplx(h_real,h_imag)/ndegen(i)
                  end do
               end do
            end do
@@ -88,7 +88,8 @@
            do  k=1,nr
               do i=1,no
                  do j=1,no
-                    read(100,*)rvec(k,:),tmp(:),l,m,hop(k,i,j)
+                    read(100,*)rvec(k,:),tmp(:),l,m,h_real,h_imag
+                    hop(k,i,j)=cmplx(h_real,h_imag)
                  end do
               end do
            end do
