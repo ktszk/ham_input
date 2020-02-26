@@ -3,32 +3,31 @@ function import_hop(fname,sw_ndegen)
     tmp=open(fname*"/irvec.txt","r") do fp
         readlines(fp)
     end
-    tmp2=[split(l) for l in tmp]
-    rvec=[[parse(Float64,l) for l in ll]  for ll in tmp2]
-    nr=length(rvec)
-    tmps=open(fname*"/ham_r.txt","r") do fp
+    nr=length(tmp)
+    rvec=zeros(Float64,3,nr)
+    for i in 1:nr
+        rvec[:,i]=parse.(Float64,split(tmp[i]))
+    end
+    tmp=open(fname*"/ham_r.txt","r") do fp
         readlines(fp)
     end
-    tmp2=[split(strip(l,['\n','(',')']),',') for l in tmps]
-    tmps=[parse(Float64,t[1])+1im*parse(Float64,t[2]) for t in tmp2]
-    no=Int(sqrt(length(tmps)/nr))
+    no=Int(sqrt(length(tmp)/nr))
+    tmp2=[parse.(Float64,split(strip(l,['\n','(',')']),',')) for l in tmp]
+    tmp=[t[1]+1im*t[2] for t in tmp2]
     ham_r=zeros(Complex,nr,no,no)
     for i in 1:no
         for j in 1:no
             for k in 1:nr
-                ham_r[k,j,i]=tmps[k+nr*(j-1)+no*nr*(i-1)]
+                ham_r[k,j,i]=tmp[i+no*(j-1)+no*no*(k-1)]
             end
         end
     end
 
-    for l in ham_r
-        println(l)
-    end
     if sw_ndegen
         tmps=open(fname*"/ndegen.txt","r") do fp
             readlines(fp)
         end
-        ndegen=[float64(l) for l in tmp]
+        ndegen=parse.(Float64,tmp)
     else
         ndegen=ones(Float64,(1,nr))
     end 
@@ -39,19 +38,32 @@ function import_out(fname)
     tmp=open(fname,"r") do fp
         readlines(fp)
     end
-    tmp1=[split(l) for l in tmp]
-    r0=[parse(Float64,t) for t in tmp1[1][1:3]]
+    tmp1=[parse.(Float64,split(l)) for l in tmp]
+    r0=tmp1[1][1:3]
     con=0
     for rr in tmp1
         if rr[1:3]==r0
-            con=con+1
+            con+=1
         end
     end
-    no=int(sqrt(con))
+    no=Int(sqrt(con))
     nr=div(length(tmp1),con)
-    rvec=[[parse(Float64,t) for t in tp[1:3]] for tp in tmp1[1:nr]]
-    ham_r=reshape([parse(Float64,tp[4])+1im*parse(Float64,tp[5]) for tp in tmp1],(nr,no,no))
-    ndegen=ones(Float64,(1,nr))
+    rvec=zeros(Float64,3,nr)
+    for i in 1:nr
+        for j in 1:3
+            rvec[j,i]=tmp1[i][j]
+        end
+    end
+    tmp=[tp[4]+1im*tp[5] for tp in tmp1]
+    ham_r=zeros(Complex,nr,no,no)
+    for i in 1:no
+        for j in 1:no
+            for k in 1:nr
+                ham_r[k,j,i]=tmp[k+nr*(j-1)+no*nr*(i-1)]
+            end
+        end
+    end
+    ndegen=ones(Float64,1,nr)
     return(rvec,ndegen,ham_r,no,nr)
 end
 
