@@ -1,3 +1,8 @@
+/*
+C++ input Hamiltonian code
+this function use only standard libs if you can use boost
+please input_ham_boost.cpp
+ */
 #include <iostream>
 #include <fstream>
 #include <complex>

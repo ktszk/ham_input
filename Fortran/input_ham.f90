@@ -1,4 +1,5 @@
       !
+      !Fortran input Hamiltonian code
       !>input hamiltonian from file
       !
       subroutine input_hamiltonian(file_name,hop,rvec,nr,no,inflag)

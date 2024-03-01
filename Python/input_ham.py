@@ -3,6 +3,7 @@
 from __future__ import print_function, division
 import numpy as np
 """
+Python input hamiltonian code with numpy
 fname: input file name
 sw_hoplist: switch hopping order if True [nr,no,no] else [no,no,nr] default True
 no is number of orbitals. nr is number of hopping matrices. 

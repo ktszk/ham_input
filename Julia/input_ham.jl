@@ -1,4 +1,7 @@
 #!/usr/bin/env julia
+#=
+Julia input Hamiltonian code
+=#
 function import_hop(fname,sw_ndegen)
     tmp=open(fname*"/irvec.txt","r") do fp
         readlines(fp)

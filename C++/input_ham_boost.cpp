@@ -1,3 +1,6 @@
+/*
+C++ input Hamiltonian code with boost
+ */
 #include <iostream>
 #include <fstream>
 #include <complex>

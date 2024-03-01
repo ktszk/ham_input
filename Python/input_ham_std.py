@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
-#if you can use only standard library, please use this script
+#if you can use only standard libraries, please use this script
 from __future__ import print_function, division
 """
+Python input Hamiltonian code use only standard packages
 fname: input file name
 sw_hoplist: switch hopping order if True [nr,no,no] else [no,no,nr] default True
 no is number of orbitals. nr is number of hopping matrices. 
