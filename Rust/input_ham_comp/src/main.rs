@@ -8,13 +8,13 @@ use std::str;
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufReader;
-use num_complex::Complex64;
+use num_complex::Complex;
 
-fn input_hamiltonian(fname: &sstr, sw_form: i32) -> (i32,i32,Vec< Vec<f64> >,Vec< Vec< Vec< Vec<Complex<f64> > > > >) {
+fn input_hamiltonian(fname: &str, sw_form: i32) -> (i32,i32,Vec< Vec<f64> >,Vec< Vec< Vec<Complex<f64> > > >) {
   let mut no=0;
   let mut nr=0;
   let mut rvec=Vec::new();
-  let mut ham_tmp::new();
+  let mut ham_tmp=Vec::new();
   match sw_form{
     0 =>{
       //.inputfile
@@ -29,11 +29,11 @@ fn input_hamiltonian(fname: &sstr, sw_form: i32) -> (i32,i32,Vec< Vec<f64> >,Vec
 	  tmp1[i]=fs;
 	  i+=1;
 	}
-	tmmp.push(tmp1);
+	tmp.push(tmp1);
       }
       let mut count=0;
       let mut sw_r=true;
-      let tmp0:[f64;3]=[tmp[0][0],tmp[0][1]],tmp[0][2]];
+      let tmp0:[f64;3]=[tmp[0][0],tmp[0][1],tmp[0][2]];
       for i in 0..tmp.len(){
         if (tmp0[0]==tmp[i][0]) & (tmp0[1]==tmp[i][1]) & (tmp0[2]==tmp[i][2]){
 	  count+=1;
@@ -132,7 +132,7 @@ fn input_hamiltonian(fname: &sstr, sw_form: i32) -> (i32,i32,Vec< Vec<f64> >,Vec
       }
     }
   }
-  let mut ham_r=vec![vec![vec![vec<Complex<f64> >; no as usize]; no as usize]; nr as usize];
+  let mut ham_r=vec![vec![vec![Complex::new(0.0,0.0); no as usize]; no as usize]; nr as usize];
   let mut l=0;
   for k in 0..no{
     for j in 0..no{
@@ -143,7 +143,7 @@ fn input_hamiltonian(fname: &sstr, sw_form: i32) -> (i32,i32,Vec< Vec<f64> >,Vec
 	if sw_form==1{
 	  l=(k+no*j+no*no*i) as usize;
 	}
-	ham_r[ii][jj][kk]=Complex::new(ham_tmp[l][0],ham_tp[l][1]);
+	ham_r[ii][jj][kk]=Complex::new(ham_tmp[l][0],ham_tmp[l][1]);
 	if sw_form==0{
 	  l+=1
 	}
@@ -162,7 +162,7 @@ fn main() {
   for ham in ham_r{
     for ha in ham{
       for h in ha{
-        println!("{} {}",h[0],h[1]);
+        println!("{}",h);
       }
     }
   }
