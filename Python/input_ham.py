@@ -9,7 +9,7 @@ sw_hoplist: switch hopping order if True [nr,no,no] else [no,no,nr] default True
 no is number of orbitals. nr is number of hopping matrices. 
 sw_ndegen: import_hop only, select lead ndegen from ndegen.txt (True) or not (False) default False
 """
-def import_hop(fname,sw_ndegen=False,sw_hoplist=True):
+def import_hop(fname:str,sw_ndegen=False,sw_hoplist=True):
     rvec=np.loadtxt(fname+'/irvec.txt')
     nr=rvec[:,0].size
     tmp=np.array([complex(float(tp[0]),float(tp[1])) for tp in [f.strip(' ()\n').split(',') for f in open(fname+'/ham_r.txt','r')]])
@@ -18,7 +18,7 @@ def import_hop(fname,sw_ndegen=False,sw_hoplist=True):
     ndegen=(np.loadtxt(fname+'/ndegen.txt') if sw_ndegen else np.ones(nr))
     return(rvec,ndegen,ham_r,no,nr)
 
-def import_out(fname,sw_hoplist=True):
+def import_out(fname:str,sw_hoplist=True):
     data=np.loadtxt(fname)
     con=(data[:,:3]==data[0,:3]).prod(axis=1).sum()
     no,nr =int(np.sqrt(con)),data[:,0].size//con
@@ -27,7 +27,7 @@ def import_out(fname,sw_hoplist=True):
     ndegen=np.ones(nr)
     return(rvec,ndegen,ham_r,no,nr)
 
-def import_hr(name,sw_hoplist=True):
+def import_hr(name:str,sw_hoplist=True):
     tmp=[f.split() for f in open('%s_hr.dat'%name,'r')]
     no, nr=int(tmp[1][0]), int(tmp[2][0])
     c2,tmp1=3,[]
